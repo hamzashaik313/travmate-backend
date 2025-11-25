@@ -1,5 +1,5 @@
-# Use Java 17 runtime
-FROM openjdk:17-jdk-slim
+# Use Java 21 runtime (Render supports Java 21)
+FROM openjdk:21-jdk-slim
 
 # Set working directory inside the container
 WORKDIR /app
