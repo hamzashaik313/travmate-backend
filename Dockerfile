@@ -1,14 +1,25 @@
-# Use Java 21 runtime (Temurin JDK)
-FROM eclipse-temurin:21-jdk
-
-# Set working directory inside the container
+# Step 1: Build stage - compile and package the Spring Boot app
+FROM eclipse-temurin:21-jdk AS build
 WORKDIR /app
 
-# Copy the compiled jar from target folder
-COPY target/*.jar app.jar
+# Copy Maven wrapper and pom.xml first (for caching)
+COPY mvnw .
+COPY .mvn .mvn
+COPY pom.xml .
 
-# Expose the backend port
+# Download dependencies (this step is cached by Docker)
+RUN ./mvnw dependency:go-offline -B
+
+# Copy source code and build the JAR
+COPY src src
+RUN ./mvnw clean package -DskipTests
+
+# Step 2: Run stage - lightweight image
+FROM eclipse-temurin:21-jdk
+WORKDIR /app
+
+# Copy the built jar from the previous stage
+COPY --from=build /app/target/*.jar app.jar
+
 EXPOSE 8080
-
-# Run the jar
 ENTRYPOINT ["java", "-jar", "app.jar"]
