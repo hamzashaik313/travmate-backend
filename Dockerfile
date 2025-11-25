@@ -1,5 +1,5 @@
-# Use Java 21 runtime (Render supports Java 21)
-FROM openjdk:21-jdk-slim
+# Use Java 21 runtime (Temurin JDK)
+FROM eclipse-temurin:21-jdk
 
 # Set working directory inside the container
 WORKDIR /app
