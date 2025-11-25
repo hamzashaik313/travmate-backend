@@ -1,25 +1,27 @@
-# Step 1: Build stage - compile and package the Spring Boot app
+# Step 1: Build stage
 FROM eclipse-temurin:21-jdk AS build
 WORKDIR /app
 
-# Copy Maven wrapper and pom.xml first (for caching)
+# Copy Maven files first
 COPY mvnw .
 COPY .mvn .mvn
 COPY pom.xml .
 
-# Download dependencies (this step is cached by Docker)
+# Give permission to run mvnw
+RUN chmod +x mvnw
+
+# Download dependencies
 RUN ./mvnw dependency:go-offline -B
 
-# Copy source code and build the JAR
+# Copy the rest of the source code
 COPY src src
+
+# Build the jar
 RUN ./mvnw clean package -DskipTests
 
-# Step 2: Run stage - lightweight image
+# Step 2: Run stage
 FROM eclipse-temurin:21-jdk
 WORKDIR /app
-
-# Copy the built jar from the previous stage
 COPY --from=build /app/target/*.jar app.jar
-
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"]
