@@ -14,16 +14,17 @@ public class CorsConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        // ✅ Allow your local + Vercel frontend
+        // ✅ Allow your local + both Vercel domains
         config.setAllowedOriginPatterns(Arrays.asList(
                 "http://localhost:3000",
-                "https://travmate-frontend.vercel.app"
+                "https://travmate-frontend.vercel.app",
+                "https://travmate.vercel.app" // ✅ Added your new domain here
         ));
 
-        // ✅ Allow needed HTTP methods
+        // ✅ Allow all common methods
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
 
-        // ✅ Allow all headers and credentials
+        // ✅ Allow all headers & credentials
         config.setAllowedHeaders(Arrays.asList("*"));
         config.setAllowCredentials(true);
         config.setExposedHeaders(Arrays.asList("Authorization", "Content-Type"));
