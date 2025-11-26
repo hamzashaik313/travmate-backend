@@ -44,38 +44,37 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-//        http
-//                .csrf(csrf -> csrf.disable())
-//                .cors(Customizer.withDefaults())
-//                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-//                .authorizeHttpRequests(auth -> auth
-//                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-//                        .requestMatchers("/", "/auth/**", "/api/auth/**", "/uploads/**", "/error").permitAll()
-//                        .requestMatchers("/api/places/**").permitAll()
-//                        .requestMatchers("/api/user/email").permitAll()
-//                        .requestMatchers("/api/user/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
-//                        .requestMatchers("/api/admin/**").hasAuthority("ROLE_ADMIN")
-//                        .anyRequest().authenticated()
-//                )
-//                .authenticationProvider(authProvider())
-//                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+
         http
                 .cors(Customizer.withDefaults())
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        // ✅ Allow preflight
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers("/auth/**", "/uploads/**").permitAll()
-                        .requestMatchers("/error").permitAll()
+
+                        // ✅ Public endpoints
+                        .requestMatchers(
+                                "/auth/**",
+                                "/api/places/**",     // <-- FIX: Allow photo/details endpoints
+                                "/api/trips/public/**",
+                                "/uploads/**",
+                                "/error"
+                        ).permitAll()
+
+                        // ✅ Protected endpoints
+                        .requestMatchers("/api/admin/**").hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(authProvider())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
-
         return http.build();
     }
 }
+
+
+
 
 
 
