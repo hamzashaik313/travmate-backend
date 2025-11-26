@@ -1,3 +1,5 @@
+
+
 package com.travmate.config;
 
 import org.springframework.context.annotation.Bean;
@@ -15,8 +17,8 @@ public class CorsConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        // ✅ Allow both local and production frontends
-        config.setAllowedOrigins(List.of(
+        // ✅ Allow both local and deployed frontends
+        config.setAllowedOriginPatterns(List.of(
                 "http://localhost:3000",
                 "https://travmate-frontend.vercel.app"
         ));
@@ -24,6 +26,7 @@ public class CorsConfig {
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
+        config.setExposedHeaders(List.of("Authorization"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
