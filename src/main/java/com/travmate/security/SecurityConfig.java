@@ -44,21 +44,34 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+//        http
+//                .csrf(csrf -> csrf.disable())
+//                .cors(Customizer.withDefaults())
+//                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+//                .authorizeHttpRequests(auth -> auth
+//                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+//                        .requestMatchers("/", "/auth/**", "/api/auth/**", "/uploads/**", "/error").permitAll()
+//                        .requestMatchers("/api/places/**").permitAll()
+//                        .requestMatchers("/api/user/email").permitAll()
+//                        .requestMatchers("/api/user/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
+//                        .requestMatchers("/api/admin/**").hasAuthority("ROLE_ADMIN")
+//                        .anyRequest().authenticated()
+//                )
+//                .authenticationProvider(authProvider())
+//                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         http
-                .csrf(csrf -> csrf.disable())
                 .cors(Customizer.withDefaults())
+                .csrf(csrf -> csrf.disable())
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers("/", "/auth/**", "/api/auth/**", "/uploads/**", "/error").permitAll()
-                        .requestMatchers("/api/places/**").permitAll()
-                        .requestMatchers("/api/user/email").permitAll()
-                        .requestMatchers("/api/user/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
-                        .requestMatchers("/api/admin/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/auth/**", "/uploads/**").permitAll()
+                        .requestMatchers("/error").permitAll()
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(authProvider())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+
 
         return http.build();
     }
