@@ -1,4 +1,3 @@
-
 package com.travmate.security;
 
 import io.jsonwebtoken.*;
@@ -6,43 +5,45 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import jakarta.annotation.PostConstruct;
 import java.security.Key;
 import java.util.Date;
 
 @Component
 public class JwtUtil {
 
-    @Value("${jwt.secret}")
+    @Value("${jwt.secret:travmateSecretKey123!*}") // fallback default
     private String secret;
 
-    @Value("${jwt.expiration}")
+    @Value("${jwt.expiration:86400000}") // default 24h
     private long expirationMillis;
 
-    private Key getSigningKey() {
-        return Keys.hmacShaKeyFor(secret.getBytes());
+    private Key signingKey;
+
+    @PostConstruct
+    public void init() {
+        // This ensures the signing key is initialized only after Spring injects the @Value fields
+        this.signingKey = Keys.hmacShaKeyFor(secret.getBytes());
     }
 
-    // Extract username/email
     public String extractUsername(String token) {
         return Jwts.parserBuilder()
-                .setSigningKey(getSigningKey())
+                .setSigningKey(signingKey)
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
     }
 
-    // Generate token
     public String generateToken(String email) {
         return Jwts.builder()
                 .setSubject(email)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expirationMillis))
-                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+                .signWith(signingKey, SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    // Validate token
     public boolean validateToken(String token, String email) {
         final String username = extractUsername(token);
         return (username.equals(email) && !isTokenExpired(token));
@@ -50,7 +51,7 @@ public class JwtUtil {
 
     private boolean isTokenExpired(String token) {
         return Jwts.parserBuilder()
-                .setSigningKey(getSigningKey())
+                .setSigningKey(signingKey)
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
@@ -58,7 +59,5 @@ public class JwtUtil {
                 .before(new Date());
     }
 }
-
-
 
 
