@@ -45,23 +45,22 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .cors(Customizer.withDefaults()) // ✅ must be before csrf
+                .cors(Customizer.withDefaults())
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        // ✅ Allow preflight (OPTIONS) for all routes
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        // ✅ Allow public endpoints
                         .requestMatchers("/auth/**", "/uploads/**", "/error").permitAll()
-                        // ✅ Everything else requires authentication
+                        .requestMatchers("/api/places/**").permitAll()  // ✅ Added
+                        .requestMatchers("/api/trips/**").permitAll()   // ✅ Optional, if needed
                         .anyRequest().authenticated()
                 )
-                // ✅ Attach your custom auth provider and JWT filter
                 .authenticationProvider(authProvider())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
+
 
 }
 
