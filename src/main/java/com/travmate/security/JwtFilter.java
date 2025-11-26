@@ -1,4 +1,3 @@
-
 package com.travmate.security;
 
 import jakarta.servlet.FilterChain;
@@ -25,9 +24,17 @@ public class JwtFilter extends OncePerRequestFilter {
     @Autowired
     private UserDetailsService userDetailsService;
 
+    /**
+     * Skip filtering for public endpoints.
+     */
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        return request.getServletPath().startsWith("/auth/");
+        String path = request.getServletPath();
+        return path.startsWith("/auth/")
+                || path.startsWith("/api/auth/")
+                || path.startsWith("/uploads/")
+                || path.equals("/")
+                || path.startsWith("/error");
     }
 
     @Override
@@ -36,7 +43,7 @@ public class JwtFilter extends OncePerRequestFilter {
                                     FilterChain filterChain)
             throws ServletException, IOException {
 
-        // Allow preflight requests
+        // ✅ Allow CORS preflight requests
         if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
             response.setStatus(HttpServletResponse.SC_OK);
             return;
@@ -46,11 +53,13 @@ public class JwtFilter extends OncePerRequestFilter {
         String token = null;
         String username = null;
 
+        // ✅ Extract token from Authorization header
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             token = authHeader.substring(7);
             username = jwtUtil.extractUsername(token);
         }
 
+        // ✅ Validate token and set authentication context
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
@@ -69,7 +78,6 @@ public class JwtFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 }
-
 
 
 
