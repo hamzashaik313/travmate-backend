@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.cors.CorsConfigurationSource;
+
 import java.util.Arrays;
 
 @Configuration
@@ -14,18 +15,14 @@ public class CorsConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        // ✅ Allow your local + both Vercel domains
         config.setAllowedOriginPatterns(Arrays.asList(
                 "http://localhost:3000",
                 "https://travmate-frontend.vercel.app",
-                "https://travmate.vercel.app" // ✅ Added your new domain here
+                "https://travmate.vercel.app" // ✅ your new domain
         ));
 
-        // ✅ Allow all common methods
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-
-        // ✅ Allow all headers & credentials
-        config.setAllowedHeaders(Arrays.asList("*"));
+        config.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept"));
         config.setAllowCredentials(true);
         config.setExposedHeaders(Arrays.asList("Authorization", "Content-Type"));
 
