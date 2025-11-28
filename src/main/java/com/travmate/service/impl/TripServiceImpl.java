@@ -172,4 +172,10 @@ public class TripServiceImpl implements TripService {
                                 .toList()
         );
     }
+    @Override
+    public List<Trip> discoverTrips(String userEmail) {
+        User currentUser = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return tripRepository.findDiscoverableTrips(currentUser);
+    }
 }

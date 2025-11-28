@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import jakarta.persistence.Column;
+
 
 @Entity
 @Table(name = "trip")
@@ -20,6 +22,15 @@ public class Trip {
     private LocalDate endDate;
 
     private String heroImageUrl;
+
+
+
+    // ✅ NEW FIELDS
+    @Column(nullable = false)
+    private String visibility = "PRIVATE";  // PUBLIC or PRIVATE
+
+    @Column(nullable = false)
+    private Integer maxMembers = 5;
 
     // legacy field used in some places – kept to avoid breaking old data
     @ManyToOne(fetch = FetchType.LAZY)
@@ -69,4 +80,24 @@ public class Trip {
 
     public List<Itinerary> getItineraries() { return itineraries; }
     public void setItineraries(List<Itinerary> itineraries) { this.itineraries = itineraries; }
+
+    // ✅ NEW GETTERS & SETTERS
+    public String getVisibility() {
+        return visibility;
+    }
+
+    public void setVisibility(String visibility) {
+        this.visibility = visibility;
+    }
+
+    public Integer getMaxMembers() {
+        return maxMembers;
+    }
+
+    public void setMaxMembers(Integer maxMembers) {
+        this.maxMembers = maxMembers;
+    }
 }
+
+
+

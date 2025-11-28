@@ -5,7 +5,8 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "trip_join_requests")
-public class TripJoinRequest {
+public class
+TripJoinRequest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

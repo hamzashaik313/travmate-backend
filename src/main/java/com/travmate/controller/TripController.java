@@ -100,4 +100,32 @@ public class TripController {
         tripService.deleteTrip(id, authentication.getName());
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/discover")
+    public ResponseEntity<?> discoverTrips(Authentication authentication) {
+        try {
+            if (authentication == null || authentication.getName() == null) {
+                return ResponseEntity.status(401).body("Unauthorized: Missing authentication info");
+            }
+
+            System.out.println("🧭 Discover request by: " + authentication.getName());
+
+            return ResponseEntity.ok(tripService.discoverTrips(authentication.getName()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+//    @GetMapping("/api/test/auth")
+//    public ResponseEntity<String> testAuth(Authentication authentication) {
+//        if (authentication == null) {
+//            return ResponseEntity.status(401).body("❌ Not authenticated");
+//        }
+//        return ResponseEntity.ok("✅ Authenticated as: " + authentication.getName());
+//    }
+
+
+
+
 }

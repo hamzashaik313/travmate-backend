@@ -18,4 +18,6 @@ public interface TripService {
     Trip updateTrip(Long id, Trip tripDetails, String userEmail);
 
     void deleteTrip(Long id, String userEmail);
+
+    List<Trip> discoverTrips(String userEmail);
 }
