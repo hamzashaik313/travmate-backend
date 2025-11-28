@@ -12,8 +12,7 @@ import java.util.List;
 @RequestMapping("/api/itinerary")
 public class ItineraryController {
 
-    @Autowired
-    private ItineraryService itineraryService;
+    @Autowired private ItineraryService itineraryService;
 
     @PostMapping("/generate/{tripId}")
     public List<Itinerary> generateItinerary(@PathVariable Long tripId) {

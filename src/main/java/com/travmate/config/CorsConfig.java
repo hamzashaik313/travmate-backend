@@ -2,9 +2,7 @@ package com.travmate.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.*;
 
 import java.util.Arrays;
 
@@ -18,13 +16,12 @@ public class CorsConfig {
         config.setAllowedOriginPatterns(Arrays.asList(
                 "http://localhost:3000",
                 "https://travmate-frontend.vercel.app",
-                "https://travmate.vercel.app" // ✅ your new domain
+                "https://travmate.vercel.app"
         ));
-
-        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        config.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept"));
+        config.setAllowedMethods(Arrays.asList("GET","POST","PUT","DELETE","OPTIONS"));
+        config.setAllowedHeaders(Arrays.asList("Authorization","Content-Type","Accept"));
         config.setAllowCredentials(true);
-        config.setExposedHeaders(Arrays.asList("Authorization", "Content-Type"));
+        config.setExposedHeaders(Arrays.asList("Authorization","Content-Type"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);

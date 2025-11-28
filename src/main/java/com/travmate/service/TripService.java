@@ -1,20 +1,21 @@
 
 package com.travmate.service;
 
+import com.travmate.dto.TripDTO;
 import com.travmate.model.Trip;
+
 import java.util.List;
 import java.util.Optional;
 
 public interface TripService {
     Trip createTrip(Trip trip, String userEmail);
-    Optional<Trip> getTripById(Long id);
+    Optional<Trip> getTripEntityById(Long id);
 
-    // CRITICAL FIX: Changed signature to require userEmail
-    List<Trip> getAllTripsByCreator(String userEmail);
+    TripDTO getTripByIdDTO(Long id);
 
-    // DELETE THE OLD, INSECURE: List<Trip> getAllTrips();
+    List<TripDTO> getAllTripsByCreator(String userEmail);
 
     Trip updateTrip(Long id, Trip tripDetails, String userEmail);
+
     void deleteTrip(Long id, String userEmail);
 }
-
