@@ -4,7 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 import jakarta.persistence.Column;
 
 
@@ -40,7 +43,7 @@ public class Trip {
 
     // new canonical owner field (for security & filtering)
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "owner_id")
+    @JoinColumn(name = "owner_id",nullable = false)
     @JsonIgnore // never serialize entity to avoid lazy proxy explosion
     private User owner;
 
@@ -81,6 +84,8 @@ public class Trip {
     public List<Itinerary> getItineraries() { return itineraries; }
     public void setItineraries(List<Itinerary> itineraries) { this.itineraries = itineraries; }
 
+
+
     // ✅ NEW GETTERS & SETTERS
     public String getVisibility() {
         return visibility;
@@ -97,6 +102,18 @@ public class Trip {
     public void setMaxMembers(Integer maxMembers) {
         this.maxMembers = maxMembers;
     }
+
+    @ManyToMany
+    @JoinTable(
+            name = "trip_members",
+            joinColumns = @JoinColumn(name = "trip_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private Set<User> members = new HashSet<>();
+
+    public Set<User> getMembers() { return members; }
+    public void setMembers(Set<User> members) { this.members = members; }
+
 }
 
 

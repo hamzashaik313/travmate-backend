@@ -459,5 +459,33 @@ public class UserController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    // --- GET /api/user/{id}/profile  (Public profile info)
+    @GetMapping("/{id}/profile")
+    public ResponseEntity<?> getUserProfile(@PathVariable Long id) {
+        return userService.getUserById(id)
+                .map(user -> {
+                    // ✅ Return only safe, public info (avoid sending password!)
+                    return ResponseEntity.ok(Map.of(
+                            "id", user.getId(),
+                            "name", user.getName(),
+                            "email", user.getEmail(),
+                            "bio", user.getBio(),
+                            "photoUrl", user.getPhotoUrl(),
+                            "preferredLanguage", user.getPreferredLanguage(),
+                            "preferredCurrency", user.getPreferredCurrency()
+                    ));
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    // --- GET /api/user/{id}/trips  (Trips created by this user)
+    @GetMapping("/{id}/trips")
+    public ResponseEntity<?> getUserTrips(@PathVariable Long id) {
+        return userService.getUserById(id)
+                .map(user -> ResponseEntity.ok(user.getTrips())) // Assuming User has a `List<Trip> trips;`
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+
 
 }

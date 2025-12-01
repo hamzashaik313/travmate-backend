@@ -86,6 +86,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "users")
 @JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
@@ -128,6 +131,20 @@ public class User {
 
     @Column(nullable = false)
     private boolean allowTripRequests = true;
+
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnoreProperties({"owner", "members", "itineraries"}) // prevent infinite recursion
+    private List<Trip> trips = new ArrayList<>();
+
+    public List<Trip> getTrips() {
+        return trips;
+    }
+
+    public void setTrips(List<Trip> trips) {
+        this.trips = trips;
+    }
+
+
 
     // --- Getters & Setters ---
     public Long getId() { return id; }

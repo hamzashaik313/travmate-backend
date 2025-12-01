@@ -4,20 +4,22 @@ package com.travmate.service;
 import com.travmate.dto.TripDTO;
 import com.travmate.model.Trip;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 public interface TripService {
     Trip createTrip(Trip trip, String userEmail);
     Optional<Trip> getTripEntityById(Long id);
-
     TripDTO getTripByIdDTO(Long id);
-
     List<TripDTO> getAllTripsByCreator(String userEmail);
-
     Trip updateTrip(Long id, Trip tripDetails, String userEmail);
-
     void deleteTrip(Long id, String userEmail);
-
     List<Trip> discoverTrips(String userEmail);
+
+    // ✅ new
+    List<Trip> findMatchingTrips(String userEmail, String destination, LocalDate start, LocalDate end);
+
+    List<Trip> getAutoMatchingTrips(String userEmail);
+
 }
